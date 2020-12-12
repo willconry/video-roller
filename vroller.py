@@ -29,15 +29,22 @@ class vroller:
     def __init__(self, input, output, direction, framerate, buffersize, outputformat, fullbufferonly, preview):
 
         self.direction = direction
-
         self.fullbufferonly = fullbufferonly
         self.preview = preview
 
         self.cap = cv2.VideoCapture(input)
     
         self.ret, self.frame = self.cap.read()
-
         self.height, self.width, self.layers = self.frame.shape
+
+        if self.direction == "DOWN":
+            self.roll = lambda: self.roll_down()
+        elif self.direction == "UP":
+            self.roll = lambda: self.roll_up()
+        elif self.direction == "LEFT":
+            self.roll = lambda: self.roll_left()
+        elif self.direction == "RIGHT":
+            self.roll = lambda: self.roll_right()
 
         if framerate == 0: fps = self.cap.get(cv2.CAP_PROP_FPS)
         else: fps = framerate
@@ -66,7 +73,7 @@ class vroller:
             if self.ret == True:
 
                 self.vbuff[self.f0] = self.frame
-                self.roll_chooser()
+                self.roll()
                 self.save_show_increment()
 
                 # Read next frame from input video
@@ -85,7 +92,7 @@ class vroller:
                 for _ in range(self.n):
 
                     self.vbuff[self.f0] = np.full((self.height, self.width, self.layers), np.uint8(0))
-                    self.roll_chooser()
+                    self.roll()
                     self.save_show_increment()
 
                     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -94,22 +101,13 @@ class vroller:
 
                 break
 
-        # Release
+        # All done
         self.cap.release()
         self.out.release()
         cv2.destroyAllWindows()
 
         print('Finished.')
 
-    def roll_chooser(self):
-        if self.direction == "DOWN":
-            self.roll_down()
-        elif self.direction == "UP":
-            self.roll_up()
-        elif self.direction == "LEFT":
-            self.roll_left()
-        elif self.direction == "RIGHT":
-            self.roll_right()
 
     def roll_up(self):
         # Create the output frame by taking a slice of each frame from the buffer

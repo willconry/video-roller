@@ -1,6 +1,6 @@
 # Video Roller
 
-This python script is used to make videos with a rolling shutter effect. The output video is composed of segments of the input video but the starting time for each consecutive segment is delayed. This makes one side of the video lag behind the other.
+This python script is used to make videos with a rolling shutter effect. The output video is composed of segments of the input video but the starting time for each consecutive segment is delayed. This makes one side of the video lag behind the other thus creating the rolling shutter effect.
 
 ## Usage
 
